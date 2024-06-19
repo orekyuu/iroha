@@ -1,6 +1,17 @@
 [versions]
 junit = "5.10.0"
+testContainers = "1.19.8"
+
+mysql-driver = "8.0.33"
+postgresql-driver = "42.7.3"
 
 [libraries]
 junitBom = { module = "org.junit:junit-bom", version.ref = "junit" }
 junitJupiter = { module = "org.junit.jupiter:junit-jupiter" }
+
+testContainersBom = { module = "org.testcontainers:testcontainers-bom", version.ref = "testContainers" }
+testContainersMysql = { module = "org.testcontainers:mysql" }
+testContainersPostgresql = { module = "org.testcontainers:postgresql" }
+
+mysqlDriver = { module = "mysql:mysql-connector-java", version.ref = "mysql-driver" }
+postgresqlDriver = { module = "org.postgresql:postgresql", version.ref = "postgresql-driver" }

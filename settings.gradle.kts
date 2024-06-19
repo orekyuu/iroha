@@ -4,4 +4,6 @@ plugins {
 rootProject.name = "iroha"
 
 include(":core")
-include(":integration")
+include(":integration-test")
+include(":integration-test:mysql")
+include(":integration-test:postgresql")
