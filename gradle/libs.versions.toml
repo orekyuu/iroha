@@ -1,5 +1,5 @@
 [versions]
-junit = "5.10.0"
+junit = "5.10.2"
 testContainers = "1.19.8"
 
 mysql-driver = "8.0.33"
