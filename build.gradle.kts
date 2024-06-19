@@ -27,6 +27,7 @@ subprojects {
     dependencies {
         testImplementation(platform(rootProject.libs.junitBom))
         testImplementation(rootProject.libs.junitJupiter)
+        testImplementation(rootProject.libs.assertj)
     }
 
     tasks {
@@ -62,5 +63,13 @@ configure(integrationTests) {
             maxHeapSize = "1g"
             useJUnitPlatform()
         }
+    }
+}
+
+project(":integration-test") {
+    dependencies {
+        implementation(platform(rootProject.libs.junitBom))
+        implementation(rootProject.libs.junitJupiter)
+        implementation(rootProject.libs.assertj)
     }
 }

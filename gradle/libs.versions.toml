@@ -1,5 +1,6 @@
 [versions]
 junit = "5.10.2"
+assertj = "3.26.0"
 testContainers = "1.19.8"
 
 mysql-driver = "8.0.33"
@@ -8,6 +9,7 @@ postgresql-driver = "42.7.3"
 [libraries]
 junitBom = { module = "org.junit:junit-bom", version.ref = "junit" }
 junitJupiter = { module = "org.junit.jupiter:junit-jupiter" }
+assertj = { module = "org.assertj:assertj-core", version.ref = "assertj" }
 
 testContainersBom = { module = "org.testcontainers:testcontainers-bom", version.ref = "testContainers" }
 testContainersMysql = { module = "org.testcontainers:mysql" }
