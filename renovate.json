@@ -1,0 +1,18 @@
+{
+  "assignAutomerge": true,
+  "extends": [
+    "config:base",
+    ":automergeMinor",
+    ":dependencyDashboard",
+    ":prHourlyLimitNone",
+    ":rebaseStalePrs"
+  ],
+  "packageRules": [
+    {
+      "groupName": "org.junit.jupiter",
+      "packagePatterns": [
+        "^org.junit.jupiter:"
+      ]
+    }
+  ]
+}
