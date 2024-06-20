@@ -1,4 +1,4 @@
-package net.orekyuu.iroha.integration;
+package net.orekyuu.iroha.integration.testcase;
 
 import javax.sql.DataSource;
 

@@ -1,13 +1,12 @@
-package net.orekyuu.iroha.integration;
+package net.orekyuu.iroha.integration.testcase;
 
+import net.orekyuu.iroha.integration.DatabaseController;
+import net.orekyuu.iroha.integration.User;
 import org.junit.jupiter.api.Test;
 
 import javax.sql.DataSource;
 
 import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

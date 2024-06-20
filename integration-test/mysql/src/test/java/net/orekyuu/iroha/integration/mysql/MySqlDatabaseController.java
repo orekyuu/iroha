@@ -1,16 +1,25 @@
 package net.orekyuu.iroha.integration.mysql;
 
 import net.orekyuu.iroha.integration.DatabaseController;
+import net.orekyuu.iroha.integration.QueryResult;
 import net.orekyuu.iroha.integration.User;
 
 import javax.sql.DataSource;
-import java.sql.PreparedStatement;
-import java.sql.Statement;
-import java.util.Collections;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class MySqlDatabaseController implements DatabaseController {
+public class MySqlDatabaseController extends DatabaseController {
+
+    private User mapping(ResultSet rs) {
+        try {
+            return new User(rs.getLong("id"), rs.getString("name"), rs.getInt("age"));
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @Override
     public void createUserTableIfNotExists(DataSource dataSource) {
@@ -19,90 +28,101 @@ public class MySqlDatabaseController implements DatabaseController {
                 "    name VARCHAR(255) NOT NULL,\n" +
                 "    age INT NOT NULL\n" +
                 ")";
-        connection(dataSource, c -> {
-            try(PreparedStatement st = c.prepareStatement(sql)) {
-                st.executeUpdate();
-            }
-        });
+        execute(dataSource, sql, st -> {});
     }
 
     @Override
     public void truncateUserTable(DataSource dataSource) {
         String sql = "TRUNCATE TABLE users";
-        connection(dataSource, c -> {
-            try(PreparedStatement st = c.prepareStatement(sql)) {
-                st.executeUpdate();
-            }
-        });
+        execute(dataSource, sql, st -> {});
     }
 
     @Override
     public List<User> findByIds(DataSource dataSource, List<Long> ids) {
         String param = ids.stream().map(it -> "?").collect(Collectors.joining(","));
 
-        return connection(dataSource, c -> {
-            return prepareStatement(c, "SELECT * FROM users WHERE id IN (" + param + ")", ps -> {
-                for (int i = 0; i < ids.size(); i++) {
-                    ps.setLong(i + 1, ids.get(i));
-                }
-            }, r -> new User(r.getLong("id"), r.getString("name"), r.getInt("age")));
+        QueryResult result = query(dataSource, "SELECT * FROM users WHERE id IN (" + param + ")", ps -> {
+            for (int i = 0; i < ids.size(); i++) {
+                ps.setLong(i + 1, ids.get(i));
+            }
         });
+        return result.stream()
+                .map(this::mapping)
+                .collect(Collectors.toList());
     }
 
     @Override
     public List<User> findAll(DataSource dataSource) {
-        return connection(dataSource, c -> {
-            return prepareStatement(c, "SELECT * FROM users", ps -> {},
-                    r -> new User(r.getLong("id"), r.getString("name"), r.getInt("age")));
-        });
+        QueryResult result = query(dataSource, "SELECT * FROM users", ps -> {});
+        return result.stream()
+                .map(this::mapping)
+                .collect(Collectors.toList());
     }
 
     @Override
     public User insert(DataSource dataSource, User user) {
-        return connection(dataSource, c -> {
-            try (PreparedStatement st = c.prepareStatement("INSERT INTO users(name, age) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS)) {
-                st.setString(1, user.name);
-                st.setInt(2, user.age);
-                int generatedId = st.executeUpdate();
-                return new User((long) generatedId, user.name, user.age);
-            }
+        int id = executeAndGetGeneratedId(dataSource, "INSERT INTO users(name, age) VALUES (?, ?)", ps -> {
+            ps.setString(1, user.name);
+            ps.setInt(2, user.age);
         });
+        return new User((long) id, user.name, user.age);
     }
 
     @Override
     public void update(DataSource dataSource, User user) {
-        connection(dataSource, c -> {
-            try (PreparedStatement st = c.prepareStatement("UPDATE users SET name = ?, age = ? WHERE id = ? ")) {
-                st.setString(1, user.name);
-                st.setInt(2, user.age);
-                st.setLong(3, user.id);
-                st.executeUpdate();
-            }
+        execute(dataSource, "UPDATE users SET name = ?, age = ? WHERE id = ? ", ps -> {
+            ps.setString(1, user.name);
+            ps.setInt(2, user.age);
+            ps.setLong(3, user.id);
         });
     }
 
     @Override
     public void delete(DataSource dataSource, User user) {
-        connection(dataSource, c -> {
-            try (PreparedStatement st = c.prepareStatement("DELETE FROM users WHERE id = ? ")) {
-                st.setLong(1, user.id);
-                st.executeUpdate();
-            }
+        execute(dataSource, "DELETE FROM users WHERE id = ?", ps -> {
+            ps.setLong(1, user.id);
         });
     }
 
     @Override
     public List<User> batchInsert(DataSource dataSource, List<User> users) {
-        return Collections.emptyList();
+        int[] ids = batchExecute(dataSource, "INSERT INTO users(name, age) VALUES (?, ?)", ps -> {
+            for (User user : users) {
+                ps.setString(1, user.name);
+                ps.setInt(2, user.age);
+                ps.addBatch();
+                ps.clearParameters();
+            }
+        });
+        ArrayList<User> results = new ArrayList<>();
+        for (int i = 0; i < users.size(); i++) {
+            User user = users.get(i);
+            results.add(new User((long)ids[i], user.name, user.age));
+        }
+        return results;
     }
 
     @Override
     public void batchUpdate(DataSource dataSource, List<User> users) {
-
+        batchExecute(dataSource, "UPDATE users SET name = ?, age = ? WHERE id = ? ", ps -> {
+            for (User user : users) {
+                ps.setString(1, user.name);
+                ps.setInt(2, user.age);
+                ps.setLong(3, user.id);
+                ps.addBatch();
+                ps.clearParameters();
+            }
+        });
     }
 
     @Override
     public void batchDelete(DataSource dataSource, List<User> users) {
-
+        batchExecute(dataSource, "DELETE FROM users WHERE id = ?", ps -> {
+            for (User user : users) {
+                ps.setLong(1, user.id);
+                ps.addBatch();
+                ps.clearParameters();
+            }
+        });
     }
 }
