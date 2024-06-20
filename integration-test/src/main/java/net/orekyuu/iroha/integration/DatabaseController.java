@@ -36,8 +36,7 @@ public interface DatabaseController {
     default <R> List<R> prepareStatement(Connection c, String sql, ThrowableConsumer<PreparedStatement> statementConsumer, ThrowableFunction<ResultSet, R> block) {
         try (PreparedStatement statement = c.prepareStatement(sql)) {
             statementConsumer.consume(statement);
-            statement.execute();
-            try (ResultSet resultSet = statement.getResultSet()) {
+            try (ResultSet resultSet = statement.executeQuery()) {
                 ArrayList<R> result = new ArrayList<>();
                 while (resultSet.next()) {
                     result.add(block.apply(resultSet));

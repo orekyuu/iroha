@@ -21,4 +21,6 @@ public abstract class SingleDataSourceTestBase implements TestScenario {
     void tearDown() {
         databaseController.truncateUserTable(getDataSource());
     }
+
+
 }

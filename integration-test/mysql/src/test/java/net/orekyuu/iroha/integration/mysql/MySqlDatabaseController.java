@@ -4,32 +4,35 @@ import net.orekyuu.iroha.integration.DatabaseController;
 import net.orekyuu.iroha.integration.User;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class MySqlDatabaseController implements DatabaseController {
 
     @Override
     public void createUserTableIfNotExists(DataSource dataSource) {
+        String sql = "CREATE TABLE IF NOT EXISTS users (\n" +
+                "    id INT AUTO_INCREMENT PRIMARY KEY,\n" +
+                "    name VARCHAR(255) NOT NULL,\n" +
+                "    age INT NOT NULL\n" +
+                ")";
         connection(dataSource, c -> {
-            prepareStatement(c, "CREATE TABLE IF NOT EXISTS users (\n" +
-                    "    id INT AUTO_INCREMENT PRIMARY KEY,\n" +
-                    "    name VARCHAR(255) NOT NULL,\n" +
-                    "    age INT NOT NULL\n" +
-                    ")", ps -> {}, r -> null);
+            try(PreparedStatement st = c.prepareStatement(sql)) {
+                st.executeUpdate();
+            }
         });
     }
 
     @Override
     public void truncateUserTable(DataSource dataSource) {
+        String sql = "TRUNCATE TABLE users";
         connection(dataSource, c -> {
-            prepareStatement(c, "TRUNCATE TABLE users", ps -> {}, r -> null);
+            try(PreparedStatement st = c.prepareStatement(sql)) {
+                st.executeUpdate();
+            }
         });
     }
 
@@ -56,17 +59,36 @@ public class MySqlDatabaseController implements DatabaseController {
 
     @Override
     public User insert(DataSource dataSource, User user) {
-        return null;
+        return connection(dataSource, c -> {
+            try (PreparedStatement st = c.prepareStatement("INSERT INTO users(name, age) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS)) {
+                st.setString(1, user.name);
+                st.setInt(2, user.age);
+                int generatedId = st.executeUpdate();
+                return new User((long) generatedId, user.name, user.age);
+            }
+        });
     }
 
     @Override
     public void update(DataSource dataSource, User user) {
-
+        connection(dataSource, c -> {
+            try (PreparedStatement st = c.prepareStatement("UPDATE users SET name = ?, age = ? WHERE id = ? ")) {
+                st.setString(1, user.name);
+                st.setInt(2, user.age);
+                st.setLong(3, user.id);
+                st.executeUpdate();
+            }
+        });
     }
 
     @Override
     public void delete(DataSource dataSource, User user) {
-
+        connection(dataSource, c -> {
+            try (PreparedStatement st = c.prepareStatement("DELETE FROM users WHERE id = ? ")) {
+                st.setLong(1, user.id);
+                st.executeUpdate();
+            }
+        });
     }
 
     @Override
