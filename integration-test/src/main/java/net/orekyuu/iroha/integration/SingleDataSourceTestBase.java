@@ -7,9 +7,7 @@ import javax.sql.DataSource;
 
 public abstract class SingleDataSourceTestBase implements TestScenario {
 
-    abstract DatabaseController databaseController();
-
-    abstract DataSource getDataSource();
+    protected abstract DataSource getDataSource();
 
     private DatabaseController databaseController;
 

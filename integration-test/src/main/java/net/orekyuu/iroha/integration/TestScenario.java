@@ -11,41 +11,43 @@ import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public interface TestScenario extends DatabaseController {
+public interface TestScenario {
 
     DataSource testTarget();
 
+    DatabaseController databaseController();
+
     @Test
     default void selectQuery() {
-        User result = insert(testTarget(), new User("test", 20));
-        assertThat(findByIds(testTarget(), Arrays.asList(result.id)))
+        User result = databaseController().insert(testTarget(), new User("test", 20));
+        assertThat(databaseController().findByIds(testTarget(), Arrays.asList(result.id)))
                 .hasSize(1)
                 .first().isEqualTo(result);
 
-        assertThat(findAll(testTarget()))
+        assertThat(databaseController().findAll(testTarget()))
                 .hasSize(1)
                 .first().isEqualTo(result);
     }
 
     @Test
     default void insertQuery() {
-        User result = insert(testTarget(), new User("test", 20));
+        User result = databaseController().insert(testTarget(), new User("test", 20));
         assertThat(result).isNotNull();
     }
 
     @Test
     default void deleteQuery() {
-        User result = insert(testTarget(), new User("test", 20));
-        delete(testTarget(), result);
+        User result = databaseController().insert(testTarget(), new User("test", 20));
+        databaseController().delete(testTarget(), result);
     }
 
     @Test
     default void updateQuery() {
-        User result = insert(testTarget(), new User("test", 20));
+        User result = databaseController().insert(testTarget(), new User("test", 20));
         result.name = "updated";
-        update(testTarget(), result);
+        databaseController().update(testTarget(), result);
 
-        User updatedUser = findByIds(testTarget(), Arrays.asList(result.id)).get(0);
+        User updatedUser = databaseController().findByIds(testTarget(), Arrays.asList(result.id)).get(0);
         assertThat(updatedUser.name).isEqualTo("updated");
     }
 
@@ -54,9 +56,9 @@ public interface TestScenario extends DatabaseController {
         List<User> users = IntStream.range(0, 20)
                 .mapToObj(i -> new User("user " + i, 10 + i))
                 .collect(Collectors.toList());
-        List<User> inserted = batchInsert(testTarget(), users);
+        List<User> inserted = databaseController().batchInsert(testTarget(), users);
 
-        assertThat(findByIds(testTarget(), inserted.stream().map(u -> u.id).collect(Collectors.toList())))
+        assertThat(databaseController().findByIds(testTarget(), inserted.stream().map(u -> u.id).collect(Collectors.toList())))
                 .containsExactly(inserted.toArray(new User[0]));
     }
 
@@ -65,11 +67,11 @@ public interface TestScenario extends DatabaseController {
         List<User> users = IntStream.range(0, 20)
                 .mapToObj(i -> new User("user " + i, 10 + i))
                 .collect(Collectors.toList());
-        List<User> inserted = batchInsert(testTarget(), users);
+        List<User> inserted = databaseController().batchInsert(testTarget(), users);
 
-        batchDelete(testTarget(), inserted);
+        databaseController().batchDelete(testTarget(), inserted);
 
-        assertThat(findByIds(testTarget(), inserted.stream().map(u -> u.id).collect(Collectors.toList())))
+        assertThat(databaseController().findByIds(testTarget(), inserted.stream().map(u -> u.id).collect(Collectors.toList())))
                 .isEmpty();
     }
 
@@ -78,15 +80,15 @@ public interface TestScenario extends DatabaseController {
         List<User> users = IntStream.range(0, 20)
                 .mapToObj(i -> new User("user " + i, 10 + i))
                 .collect(Collectors.toList());
-        List<User> inserted = batchInsert(testTarget(), users);
+        List<User> inserted = databaseController().batchInsert(testTarget(), users);
 
         List<User> updated = inserted.stream()
                 .map(u -> new User(u.id, "updated" + u.name, u.age + 10))
                 .collect(Collectors.toList());
 
-        batchUpdate(testTarget(), updated);
+        databaseController().batchUpdate(testTarget(), updated);
 
-        assertThat(findByIds(testTarget(), inserted.stream().map(u -> u.id).collect(Collectors.toList())))
+        assertThat(databaseController().findByIds(testTarget(), inserted.stream().map(u -> u.id).collect(Collectors.toList())))
                 .containsExactly(updated.toArray(new User[0]));
     }
 }
