@@ -20,6 +20,7 @@ public abstract class DatabaseController {
         try {
             Connection connection = dataSource.getConnection();
             PreparedStatement st = connection.prepareStatement(sql);
+            System.out.println(sql);
             block.consume(st);
             return new QueryResult(st.executeQuery());
         } catch (Exception e) {
@@ -31,6 +32,7 @@ public abstract class DatabaseController {
         try {
             Connection connection = dataSource.getConnection();
             PreparedStatement st = connection.prepareStatement(sql);
+            System.out.println(sql);
             block.consume(st);
             return st.executeUpdate();
         } catch (Exception e) {

@@ -71,5 +71,6 @@ project(":integration-test") {
         implementation(platform(rootProject.libs.junitBom))
         implementation(rootProject.libs.junitJupiter)
         implementation(rootProject.libs.assertj)
+        implementation(project(":core"))
     }
 }

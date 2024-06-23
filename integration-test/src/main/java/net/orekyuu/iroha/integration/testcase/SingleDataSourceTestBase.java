@@ -1,5 +1,6 @@
 package net.orekyuu.iroha.integration.testcase;
 
+import net.orekyuu.iroha.datasource.IrohaDataSource;
 import net.orekyuu.iroha.integration.DatabaseController;
 import net.orekyuu.iroha.integration.User;
 import org.junit.jupiter.api.AfterEach;
@@ -7,6 +8,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import javax.sql.DataSource;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -17,19 +19,19 @@ public abstract class SingleDataSourceTestBase implements TestScenario {
 
     protected abstract DataSource getDataSource();
 
+    @Override
+    public DataSource testTarget() {
+        return new IrohaDataSource(() -> Collections.singletonList(getDataSource()));
+    }
+
     private DatabaseController databaseController;
 
     @BeforeEach
     void setup() {
         databaseController = databaseController();
         databaseController.createUserTableIfNotExists(getDataSource());
-    }
-
-    @AfterEach
-    void tearDown() {
         databaseController.truncateUserTable(getDataSource());
     }
-
 
     @Test
     void batchInsertQuery() {

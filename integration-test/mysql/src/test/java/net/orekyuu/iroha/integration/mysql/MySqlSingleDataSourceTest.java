@@ -20,15 +20,9 @@ public class MySqlSingleDataSourceTest extends SingleDataSourceTestBase {
         container.start();
     }
 
-
     @Override
     protected DataSource getDataSource() {
         return simpleDataSource;
-    }
-
-    @Override
-    public DataSource testTarget() {
-        return new IrohaDataSource(() -> Collections.singletonList(simpleDataSource));
     }
 
     @Override
