@@ -17,3 +17,6 @@ testContainersPostgresql = { module = "org.testcontainers:postgresql" }
 
 mysqlDriver = { module = "mysql:mysql-connector-java", version.ref = "mysql-driver" }
 postgresqlDriver = { module = "org.postgresql:postgresql", version.ref = "postgresql-driver" }
+
+[plugins]
+spotless = { id = "com.diffplug.spotless", version = "6.25.0" }
