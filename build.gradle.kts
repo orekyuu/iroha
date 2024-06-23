@@ -1,5 +1,6 @@
 plugins {
     `java-library`
+    alias(libs.plugins.spotless)
 }
 
 group = "net.orekyuu"
@@ -9,19 +10,26 @@ val integrationTests: List<Project> = findProject("integration-test")!!.subproje
 
 subprojects {
     apply(plugin = "java-library")
+    apply(plugin = rootProject.libs.plugins.spotless.get().pluginId)
 
     repositories {
         mavenCentral()
     }
 
     java {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
         toolchain {
-            languageVersion = JavaLanguageVersion.of(8)
+            languageVersion = JavaLanguageVersion.of(11)
         }
         withSourcesJar()
         withJavadocJar()
+    }
+
+    spotless {
+        java {
+            googleJavaFormat("1.17.0")
+        }
     }
 
     dependencies {
@@ -36,6 +44,9 @@ subprojects {
         }
         test {
             useJUnitPlatform()
+        }
+        build {
+            dependsOn(spotlessApply)
         }
     }
 }
