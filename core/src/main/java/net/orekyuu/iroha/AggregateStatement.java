@@ -126,11 +126,13 @@ public class AggregateStatement<T extends Statement> extends WrapAdaptor impleme
   }
 
   @Override
-  public void setCursorName(String name) throws SQLException {}
+  public void setCursorName(String name) throws SQLException {
+    throw new TodoException();
+  }
 
   @Override
   public ResultSet getResultSet() throws SQLException {
-    return null;
+    throw new TodoException();
   }
 
   @Override
@@ -140,7 +142,7 @@ public class AggregateStatement<T extends Statement> extends WrapAdaptor impleme
 
   @Override
   public boolean getMoreResults() throws SQLException {
-    return false;
+    throw new TodoException();
   }
 
   @Override
@@ -175,20 +177,18 @@ public class AggregateStatement<T extends Statement> extends WrapAdaptor impleme
 
   @Override
   public void addBatch(String sql) throws SQLException {
-    // TODO
-    throw new UnsupportedOperationException("Not implemented.");
+    throw new TodoException();
   }
 
   @Override
   public void clearBatch() throws SQLException {
-    // TODO
-    throw new UnsupportedOperationException("Not implemented.");
+    throw new TodoException();
   }
 
   @Override
   public int[] executeBatch() throws SQLException {
     // TODO
-    throw new UnsupportedOperationException("Not implemented.");
+    throw new TodoException();
   }
 
   @Override
@@ -198,20 +198,17 @@ public class AggregateStatement<T extends Statement> extends WrapAdaptor impleme
 
   @Override
   public boolean getMoreResults(int current) throws SQLException {
-    // TODO
-    throw new UnsupportedOperationException("Not implemented.");
+    throw new TodoException();
   }
 
   @Override
   public ResultSet getGeneratedKeys() throws SQLException {
-    // TODO
-    throw new UnsupportedOperationException("Not implemented.");
+    throw new TodoException();
   }
 
   @Override
   public int getResultSetHoldability() throws SQLException {
-    // TODO
-    throw new UnsupportedOperationException("Not implemented.");
+    throw new TodoException();
   }
 
   @Override
