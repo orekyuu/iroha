@@ -20,7 +20,7 @@ public class AggregateStatement<T extends Statement> extends WrapAdaptor impleme
     this.executeUpdateDelegator = new ExecuteUpdateDelegator<>(statements);
     this.executeDelegator = new ExecuteDelegator<>(statements);
     this.settingsDelegator = new StatementSettingsDelegator<>(statements);
-    this.sqlWarningDelegator = new SQLWarningDelegator<>(statements);
+    this.sqlWarningDelegator = new SQLWarningDelegator<>(statements, Statement::getWarnings);
     this.getUpdateCountDelegator = new GetUpdateCountDelegator<>(statements);
     this.executeAllMethodSafelyDelegator = new ExecuteAllMethodSafelyDelegator<>(statements);
   }
