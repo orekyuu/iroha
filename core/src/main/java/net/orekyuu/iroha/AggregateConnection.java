@@ -104,7 +104,7 @@ public class AggregateConnection extends WrapAdaptor implements Connection {
 
   @Override
   public String nativeSQL(String sql) throws SQLException {
-    throw new TodoException();
+    throw new UnsupportedOperationException();
   }
 
   @Override
@@ -114,92 +114,87 @@ public class AggregateConnection extends WrapAdaptor implements Connection {
 
   @Override
   public boolean isClosed() throws SQLException {
-    throw new TodoException();
+    for (Connection connection : connections) {
+      if (!connection.isClosed()) {
+        return false;
+      }
+    }
+    return true;
   }
 
   @Override
   public String getSchema() throws SQLException {
-    throw new TodoException();
+    throw new UnsupportedOperationException();
   }
 
   @Override
   public void setSchema(String schema) throws SQLException {
-    throw new TodoException();
+    throw new UnsupportedOperationException();
   }
 
   @Override
   public String getCatalog() throws SQLException {
-    throw new TodoException();
+    throw new UnsupportedOperationException();
   }
 
   @Override
   public void setCatalog(String catalog) throws SQLException {
-    throw new TodoException();
-  }
-
-  @Override
-  public void setHoldability(int holdability) throws SQLException {
-    throw new TodoException();
-  }
-
-  @Override
-  public int getHoldability() throws SQLException {
-    throw new TodoException();
+    throw new UnsupportedOperationException();
   }
 
   @Override
   public void setClientInfo(Properties properties) throws SQLClientInfoException {
-    throw new TodoException();
+    throw new UnsupportedOperationException();
   }
 
   @Override
   public void setClientInfo(String name, String value) throws SQLClientInfoException {
-    throw new TodoException();
+    throw new UnsupportedOperationException();
   }
 
   @Override
   public Properties getClientInfo() throws SQLException {
-    throw new TodoException();
+    throw new UnsupportedOperationException();
   }
 
   @Override
   public String getClientInfo(String name) throws SQLException {
-    throw new TodoException();
+    throw new UnsupportedOperationException();
   }
 
   @Override
   public boolean isValid(int timeout) throws SQLException {
-    throw new TodoException();
+    for (Connection connection : connections) {
+      if (!connection.isValid(timeout)) {
+        return false;
+      }
+    }
+    return true;
   }
 
   @Override
   public boolean isReadOnly() throws SQLException {
-    throw new TodoException();
+    for (Connection connection : connections) {
+      if (!connection.isReadOnly()) {
+        return false;
+      }
+    }
+    return true;
   }
 
   @Override
   public void setReadOnly(boolean readOnly) throws SQLException {
-    throw new TodoException();
+    executeAllMethodSafelyDelegator.executeSafely(c -> c.setReadOnly(readOnly));
   }
 
   @Override
   public DatabaseMetaData getMetaData() throws SQLException {
-    throw new TodoException();
-  }
-
-  @Override
-  public void beginRequest() throws SQLException {
-    throw new TodoException();
-  }
-
-  @Override
-  public void endRequest() throws SQLException {
-    throw new TodoException();
+    throw new UnsupportedOperationException();
   }
 
   @Override
   public void abort(Executor executor) throws SQLException {
-    throw new TodoException();
+    executeAllMethodSafelyDelegator.executeSafely(c -> c.abort(executor));
   }
 
   // transaction methods
@@ -301,6 +296,16 @@ public class AggregateConnection extends WrapAdaptor implements Connection {
 
   @Override
   public Map<String, Class<?>> getTypeMap() throws SQLException {
+    throw new SQLFeatureNotSupportedException();
+  }
+
+  @Override
+  public void setHoldability(int holdability) throws SQLException {
+    throw new SQLFeatureNotSupportedException();
+  }
+
+  @Override
+  public int getHoldability() throws SQLException {
     throw new SQLFeatureNotSupportedException();
   }
 }
