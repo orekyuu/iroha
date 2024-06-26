@@ -7,11 +7,17 @@
 
 name: Java CI with Gradle
 
-on: [push, pull_request]
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    paths-ignore:
+      - '.gitignore'
+      - 'LICENSE'
+      - '**.md'
 
 jobs:
-  build:
-
+  test:
     runs-on: ubuntu-latest
     permissions:
       contents: read
