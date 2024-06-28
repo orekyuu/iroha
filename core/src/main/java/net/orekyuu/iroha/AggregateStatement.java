@@ -5,14 +5,15 @@ import java.util.List;
 import net.orekyuu.iroha.delegate.*;
 
 public class AggregateStatement<T extends Statement> extends WrapAdaptor implements Statement {
-  private final Connection connection;
-  private final List<T> statements;
-  private final ExecuteUpdateDelegator<T> executeUpdateDelegator;
-  private final ExecuteDelegator<T> executeDelegator;
-  private final StatementSettingsDelegator<T> settingsDelegator;
-  private final SQLWarningDelegator<T> sqlWarningDelegator;
-  private final GetUpdateCountDelegator<T> getUpdateCountDelegator;
-  private final ExecuteAllMethodSafelyDelegator<T> executeAllMethodSafelyDelegator;
+  final Connection connection;
+  final List<T> statements;
+  final ExecuteUpdateDelegator<T> executeUpdateDelegator;
+  final ExecuteDelegator<T> executeDelegator;
+  final StatementSettingsDelegator<T> settingsDelegator;
+  final SQLWarningDelegator<T> sqlWarningDelegator;
+  final GetUpdateCountDelegator<T> getUpdateCountDelegator;
+  final ExecuteAllMethodSafelyDelegator<T> executeAllMethodSafelyDelegator;
+  final ResultSetDelegator<T, AggregateStatement<T>> resultSetDelegator;
 
   public AggregateStatement(Connection connection, List<T> statements) {
     this.connection = connection;
@@ -23,6 +24,7 @@ public class AggregateStatement<T extends Statement> extends WrapAdaptor impleme
     this.sqlWarningDelegator = new SQLWarningDelegator<>(statements, Statement::getWarnings);
     this.getUpdateCountDelegator = new GetUpdateCountDelegator<>(statements);
     this.executeAllMethodSafelyDelegator = new ExecuteAllMethodSafelyDelegator<>(statements);
+    this.resultSetDelegator = new ResultSetDelegator<>(statements, this);
   }
 
   @Override
@@ -67,7 +69,7 @@ public class AggregateStatement<T extends Statement> extends WrapAdaptor impleme
 
   @Override
   public ResultSet executeQuery(String sql) throws SQLException {
-    return null;
+    return resultSetDelegator.delegate(st -> st.executeQuery(sql));
   }
 
   @Override
@@ -132,7 +134,7 @@ public class AggregateStatement<T extends Statement> extends WrapAdaptor impleme
 
   @Override
   public ResultSet getResultSet() throws SQLException {
-    throw new TodoException();
+    return resultSetDelegator.delegate(Statement::getResultSet);
   }
 
   @Override
