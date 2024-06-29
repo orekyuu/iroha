@@ -316,8 +316,8 @@ public class AggregatePreparedStatement extends AggregateStatement<PreparedState
     executeAllMethodSafelyDelegator.executeSafely(st -> st.setTimestamp(parameterIndex, x));
   }
 
-  @SuppressWarnings("deprecation")
   @Override
+  @Deprecated
   public void setUnicodeStream(int parameterIndex, InputStream x, int length) throws SQLException {
     executeAllMethodSafelyDelegator.executeSafely(
         st -> st.setUnicodeStream(parameterIndex, x, length));
