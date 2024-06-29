@@ -23,6 +23,7 @@ public class AggregateResultSet extends WrapAdaptor implements ResultSet {
     this.statement = statement;
     executeAllMethodSafelyDelegator = new ExecuteAllMethodSafelyDelegator<>(resultSets);
     sqlWarningDelegator = new SQLWarningDelegator<>(resultSets, ResultSet::getWarnings);
+    current = resultSets.get(0);
   }
 
   @Override

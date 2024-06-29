@@ -5,32 +5,41 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
 import java.util.logging.Logger;
 import javax.sql.DataSource;
 
 public class AggregateDataSource extends WrapAdaptor implements DataSource {
 
-  private final List<DataSource> dataSources;
+  private final DataSourceSelector selector;
 
-  public AggregateDataSource(Collection<? extends DataSource> dataSources) {
-    this.dataSources = new ArrayList<>(dataSources);
-  }
-
-  public AggregateDataSource(DataSource... dataSources) {
-    this(Arrays.asList(dataSources));
+  public AggregateDataSource(DataSourceSelector selector) {
+    this.selector = selector;
   }
 
   @Override
   public Connection getConnection() throws SQLException {
-    return null;
+    var selected = selector.select();
+    if (selected.isEmpty()) {
+      throw new SQLException(selector.getClass().getName() + " does not return empty list");
+    }
+    var connections = new ArrayList<Connection>();
+    for (DataSource dataSource : selected) {
+      connections.add(dataSource.getConnection());
+    }
+    return new AggregateConnection(connections);
   }
 
   @Override
   public Connection getConnection(String username, String password) throws SQLException {
-    return null;
+    var selected = selector.select();
+    if (selected.isEmpty()) {
+      throw new SQLException(selector.getClass().getName() + " does not return empty list");
+    }
+    var connections = new ArrayList<Connection>();
+    for (DataSource dataSource : selected) {
+      connections.add(dataSource.getConnection(username, password));
+    }
+    return new AggregateConnection(connections);
   }
 
   @Override

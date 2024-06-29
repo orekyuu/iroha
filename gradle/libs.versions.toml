@@ -1,15 +1,19 @@
 [versions]
 junit = "5.10.3"
 assertj = "3.26.0"
+assertj-db = "2.0.2"
 testContainers = "1.19.8"
 
 mysql-driver = "8.0.33"
 postgresql-driver = "42.7.3"
 
+doma = "2.60.1"
+
 [libraries]
 junitBom = { module = "org.junit:junit-bom", version.ref = "junit" }
 junitJupiter = { module = "org.junit.jupiter:junit-jupiter" }
 assertj = { module = "org.assertj:assertj-core", version.ref = "assertj" }
+assertjDb = { module = "org.assertj:assertj-db", version.ref = "assertj-db" }
 
 testContainersBom = { module = "org.testcontainers:testcontainers-bom", version.ref = "testContainers" }
 testContainersMysql = { module = "org.testcontainers:mysql" }
@@ -17,6 +21,10 @@ testContainersPostgresql = { module = "org.testcontainers:postgresql" }
 
 mysqlDriver = { module = "mysql:mysql-connector-java", version.ref = "mysql-driver" }
 postgresqlDriver = { module = "org.postgresql:postgresql", version.ref = "postgresql-driver" }
+
+# orm for integration test
+doma = { module = "org.seasar.doma:doma-core", version.ref = "doma" }
+domaProcessor = { module = "org.seasar.doma:doma-processor", version.ref = "doma" }
 
 [plugins]
 spotless = { id = "com.diffplug.spotless", version = "6.25.0" }

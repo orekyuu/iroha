@@ -55,7 +55,6 @@ configure(integrationTests) {
     apply(plugin = "java-library")
 
     dependencies {
-        implementation(project(":core"))
         // integration-test library
         testImplementation(project(":integration-test"))
         // test containers
@@ -79,8 +78,13 @@ configure(integrationTests) {
 
 project(":integration-test") {
     dependencies {
-        implementation(platform(rootProject.libs.junitBom))
-        implementation(rootProject.libs.junitJupiter)
-        implementation(rootProject.libs.assertj)
+        api(platform(rootProject.libs.junitBom))
+        api(rootProject.libs.junitJupiter)
+        api(rootProject.libs.assertj)
+        api(rootProject.libs.assertjDb)
+        api(project(":core"))
+
+        api(rootProject.libs.doma)
+        annotationProcessor(rootProject.libs.domaProcessor)
     }
 }
