@@ -22,4 +22,7 @@ public interface UserDao {
   @Select
   @Sql("select * from users where id in /*ids*/(1, 2)")
   List<UserEntity> selectByIds(List<Integer> ids);
+
+  @BatchInsert
+  int[] batchInsert(List<UserEntity> entity);
 }

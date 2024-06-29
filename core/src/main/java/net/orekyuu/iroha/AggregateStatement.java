@@ -205,7 +205,7 @@ public class AggregateStatement<T extends Statement> extends WrapAdaptor impleme
 
   @Override
   public ResultSet getGeneratedKeys() throws SQLException {
-    throw new TodoException();
+    return resultSetDelegator.delegate(Statement::getGeneratedKeys);
   }
 
   @Override

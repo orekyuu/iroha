@@ -1,12 +1,14 @@
 package net.orekyuu.iroha.integration.doma;
 
-import org.seasar.doma.Entity;
-import org.seasar.doma.Table;
+import org.seasar.doma.*;
 
 @Entity
 @Table(name = "users")
 public class UserEntity {
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Id
   public Long id;
+
   public String name;
   public int age;
 
