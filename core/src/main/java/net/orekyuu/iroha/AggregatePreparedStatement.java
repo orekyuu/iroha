@@ -1,7 +1,6 @@
 package net.orekyuu.iroha;
 
-import java.io.InputStream;
-import java.io.Reader;
+import java.io.*;
 import java.math.BigDecimal;
 import java.net.URL;
 import java.sql.*;
@@ -61,19 +60,35 @@ public class AggregatePreparedStatement extends AggregateStatement<PreparedState
 
   @Override
   public void setAsciiStream(int parameterIndex, InputStream x, long length) throws SQLException {
-    executeAllMethodSafelyDelegator.executeSafely(
-        st -> st.setAsciiStream(parameterIndex, x, length));
+    try {
+      byte[] buffer = x.readAllBytes();
+      executeAllMethodSafelyDelegator.executeSafely(
+          st -> st.setAsciiStream(parameterIndex, new ByteArrayInputStream(buffer), length));
+    } catch (IOException e) {
+      throw new SQLException(e);
+    }
   }
 
   @Override
   public void setAsciiStream(int parameterIndex, InputStream x, int length) throws SQLException {
-    executeAllMethodSafelyDelegator.executeSafely(
-        st -> st.setAsciiStream(parameterIndex, x, length));
+    try {
+      byte[] buffer = x.readAllBytes();
+      executeAllMethodSafelyDelegator.executeSafely(
+          st -> st.setAsciiStream(parameterIndex, new ByteArrayInputStream(buffer), length));
+    } catch (IOException e) {
+      throw new SQLException(e);
+    }
   }
 
   @Override
   public void setAsciiStream(int parameterIndex, InputStream x) throws SQLException {
-    executeAllMethodSafelyDelegator.executeSafely(st -> st.setAsciiStream(parameterIndex, x));
+    try {
+      byte[] buffer = x.readAllBytes();
+      executeAllMethodSafelyDelegator.executeSafely(
+          st -> st.setAsciiStream(parameterIndex, new ByteArrayInputStream(buffer)));
+    } catch (IOException e) {
+      throw new SQLException(e);
+    }
   }
 
   @Override
@@ -83,19 +98,35 @@ public class AggregatePreparedStatement extends AggregateStatement<PreparedState
 
   @Override
   public void setBinaryStream(int parameterIndex, InputStream x, int length) throws SQLException {
-    executeAllMethodSafelyDelegator.executeSafely(
-        st -> st.setBinaryStream(parameterIndex, x, length));
+    try {
+      byte[] buffer = x.readAllBytes();
+      executeAllMethodSafelyDelegator.executeSafely(
+          st -> st.setBinaryStream(parameterIndex, new ByteArrayInputStream(buffer), length));
+    } catch (IOException e) {
+      throw new SQLException(e);
+    }
   }
 
   @Override
   public void setBinaryStream(int parameterIndex, InputStream x) throws SQLException {
-    executeAllMethodSafelyDelegator.executeSafely(st -> st.setBinaryStream(parameterIndex, x));
+    try {
+      byte[] buffer = x.readAllBytes();
+      executeAllMethodSafelyDelegator.executeSafely(
+          st -> st.setBinaryStream(parameterIndex, new ByteArrayInputStream(buffer)));
+    } catch (IOException e) {
+      throw new SQLException(e);
+    }
   }
 
   @Override
   public void setBinaryStream(int parameterIndex, InputStream x, long length) throws SQLException {
-    executeAllMethodSafelyDelegator.executeSafely(
-        st -> st.setBinaryStream(parameterIndex, x, length));
+    try {
+      byte[] buffer = x.readAllBytes();
+      executeAllMethodSafelyDelegator.executeSafely(
+          st -> st.setBinaryStream(parameterIndex, new ByteArrayInputStream(buffer), length));
+    } catch (IOException e) {
+      throw new SQLException(e);
+    }
   }
 
   @Override
@@ -133,21 +164,39 @@ public class AggregatePreparedStatement extends AggregateStatement<PreparedState
   @Override
   public void setCharacterStream(int parameterIndex, Reader reader, long length)
       throws SQLException {
-    executeAllMethodSafelyDelegator.executeSafely(
-        st -> st.setCharacterStream(parameterIndex, reader, length));
+    try {
+      var writer = new StringWriter();
+      reader.transferTo(writer);
+      executeAllMethodSafelyDelegator.executeSafely(
+          st -> st.setCharacterStream(parameterIndex, new StringReader(writer.toString()), length));
+    } catch (IOException e) {
+      throw new SQLException(e);
+    }
   }
 
   @Override
   public void setCharacterStream(int parameterIndex, Reader reader, int length)
       throws SQLException {
-    executeAllMethodSafelyDelegator.executeSafely(
-        st -> st.setCharacterStream(parameterIndex, reader, length));
+    try {
+      var writer = new StringWriter();
+      reader.transferTo(writer);
+      executeAllMethodSafelyDelegator.executeSafely(
+          st -> st.setCharacterStream(parameterIndex, new StringReader(writer.toString()), length));
+    } catch (IOException e) {
+      throw new SQLException(e);
+    }
   }
 
   @Override
   public void setCharacterStream(int parameterIndex, Reader reader) throws SQLException {
-    executeAllMethodSafelyDelegator.executeSafely(
-        st -> st.setCharacterStream(parameterIndex, reader));
+    try {
+      var writer = new StringWriter();
+      reader.transferTo(writer);
+      executeAllMethodSafelyDelegator.executeSafely(
+          st -> st.setCharacterStream(parameterIndex, new StringReader(writer.toString())));
+    } catch (IOException e) {
+      throw new SQLException(e);
+    }
   }
 
   @Override
@@ -198,14 +247,27 @@ public class AggregatePreparedStatement extends AggregateStatement<PreparedState
   @Override
   public void setNCharacterStream(int parameterIndex, Reader value, long length)
       throws SQLException {
-    executeAllMethodSafelyDelegator.executeSafely(
-        st -> st.setNCharacterStream(parameterIndex, value, length));
+    try {
+      var writer = new StringWriter();
+      value.transferTo(writer);
+      executeAllMethodSafelyDelegator.executeSafely(
+          st ->
+              st.setNCharacterStream(parameterIndex, new StringReader(writer.toString()), length));
+    } catch (IOException e) {
+      throw new SQLException(e);
+    }
   }
 
   @Override
   public void setNCharacterStream(int parameterIndex, Reader value) throws SQLException {
-    executeAllMethodSafelyDelegator.executeSafely(
-        st -> st.setNCharacterStream(parameterIndex, value));
+    try {
+      var writer = new StringWriter();
+      value.transferTo(writer);
+      executeAllMethodSafelyDelegator.executeSafely(
+          st -> st.setNCharacterStream(parameterIndex, new StringReader(writer.toString())));
+    } catch (IOException e) {
+      throw new SQLException(e);
+    }
   }
 
   @Override
@@ -319,8 +381,13 @@ public class AggregatePreparedStatement extends AggregateStatement<PreparedState
   @Override
   @Deprecated
   public void setUnicodeStream(int parameterIndex, InputStream x, int length) throws SQLException {
-    executeAllMethodSafelyDelegator.executeSafely(
-        st -> st.setUnicodeStream(parameterIndex, x, length));
+    try {
+      byte[] buffer = x.readAllBytes();
+      executeAllMethodSafelyDelegator.executeSafely(
+          st -> st.setUnicodeStream(parameterIndex, new ByteArrayInputStream(buffer), length));
+    } catch (IOException e) {
+      throw new SQLException(e);
+    }
   }
 
   @Override
