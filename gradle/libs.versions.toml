@@ -7,7 +7,7 @@ testContainers = "1.20.0"
 mysql-driver = "8.0.33"
 postgresql-driver = "42.7.3"
 
-doma = "2.60.1"
+doma = "2.61.0"
 
 [libraries]
 junitBom = { module = "org.junit:junit-bom", version.ref = "junit" }
