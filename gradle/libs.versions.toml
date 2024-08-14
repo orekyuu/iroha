@@ -1,5 +1,5 @@
 [versions]
-junit = "5.10.3"
+junit = "5.11.0"
 assertj = "3.26.3"
 assertj-db = "2.0.2"
 testContainers = "1.20.1"
