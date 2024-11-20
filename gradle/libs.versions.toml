@@ -2,7 +2,7 @@
 junit = "5.11.3"
 assertj = "3.26.3"
 assertj-db = "2.0.2"
-testContainers = "1.20.3"
+testContainers = "1.20.4"
 
 mysql-driver = "8.0.33"
 postgresql-driver = "42.7.4"
