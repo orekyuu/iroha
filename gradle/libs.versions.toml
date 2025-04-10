@@ -27,4 +27,4 @@ doma = { module = "org.seasar.doma:doma-core", version.ref = "doma" }
 domaProcessor = { module = "org.seasar.doma:doma-processor", version.ref = "doma" }
 
 [plugins]
-spotless = { id = "com.diffplug.spotless", version = "6.25.0" }
+spotless = { id = "com.diffplug.spotless", version = "7.0.3" }
